@@ -1,0 +1,12 @@
+const express = require("express");
+const router = express.Router();
+const pizza = require("./clientSub/pizza");
+const auth = require("./clientSub/auth");
+const cart = require("./clientSub/cart");
+const order = require("./clientSub/order");
+const { protect } = require("../middleware/protect");
+router.use("/", pizza);
+router.use("/", auth);
+router.use("/", protect, cart);
+router.use("/", protect, order);
+module.exports = router;
