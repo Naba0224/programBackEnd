@@ -6,6 +6,7 @@ const {
   getCartItems,
 } = require("../../controller/client/cart");
 
-router.route("/cart").post(addToCart).get(getCartItems).delete(removeFromCart);
+router.route("/cart").post(addToCart).get(getCartItems);
+router.route("/cart_delete").post(removeFromCart);
 
 module.exports = router;

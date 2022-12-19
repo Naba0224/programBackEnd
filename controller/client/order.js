@@ -4,10 +4,14 @@ const jwt = require("jsonwebtoken");
 const Order = require("../../models/order");
 const Cart = require("../../models/cartItems");
 const Pizza = require("../../models/pizza");
+const ObjectId = require("mongoose").Types.ObjectId;
+const moment = require("moment-timezone");
 
 exports.createOrder = asyncHandler(async (req, res, next) => {
   //get the token data we need the user Id
 
+  console.log("create order");
+  console.log(req.headers.authorization);
   const tokenData = jwt.decode(req.headers.authorization.split(" ")[1]);
   //get the Cart Items of the user
 
@@ -57,6 +61,14 @@ exports.getOrders = asyncHandler(async (req, res, next) => {
   //get the orders by userId
 
   const theORders = await Order.find({ userId: tokenData.id }).lean();
+  for (let i = 0; i < theORders.length; i++) {
+    const timeStamp = ObjectId(theORders[i]._id).getTimestamp().getTime();
+    const date = moment(timeStamp)
+      .tz("Asia/Ulaanbaatar")
+      .format("YYYY-MM-DDTHH:mm:ss");
+    theORders[i].atTime = date;
+  }
+  console.table(theORders);
   res.status(200).json({
     success: true,
     data: theORders,
